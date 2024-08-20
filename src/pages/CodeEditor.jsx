@@ -6,6 +6,8 @@ import 'ace-builds/src-noconflict/mode-python';
 import 'ace-builds/src-noconflict/mode-java';
 import 'ace-builds/src-noconflict/mode-c_cpp';
 import 'ace-builds/src-noconflict/theme-monokai';
+import 'ace-builds/src-noconflict/theme-github'; // Additional themes
+import 'ace-builds/src-noconflict/theme-twilight'; // Additional themes
 import 'ace-builds/src-noconflict/ext-language_tools';
 
 const CodeEditor = () => {
@@ -14,6 +16,8 @@ const CodeEditor = () => {
     const [input, setInput] = useState('');
     const [language, setLanguage] = useState('python'); // Default to Python
     const [loading, setLoading] = useState(false); // Loading state
+    const [fontSize, setFontSize] = useState(16); // Default font size
+    const [theme, setTheme] = useState('monokai'); // Default theme
 
     const handleCodeChange = (newCode) => {
         setCode(newCode);
@@ -35,11 +39,19 @@ const CodeEditor = () => {
         }
     };
 
+    const handleFontSizeChange = (event) => {
+        setFontSize(parseInt(event.target.value, 10));
+    };
+
+    const handleThemeChange = (event) => {
+        setTheme(event.target.value);
+    };
+
     const runCode = async () => {
         setLoading(true); // Start loading
         setOutput(''); // Clear previous output
         try {
-            const response = await axios.post(`http://localhost:5000/api/run/${language}`, { code, input });
+            const response = await axios.post(`https://code-chat-backend-elh6.onrender.com/api/run/${language}`, { code, input });
             setOutput(response.data.result);
         } catch (error) {
             setOutput(error.response ? error.response.data.error : 'An error occurred');
@@ -58,12 +70,29 @@ const CodeEditor = () => {
                     <option value="java">Java</option>
                 </select>
             </div>
+            <div style={{ marginTop: '10px' }}>
+                <label htmlFor="font-size">Font Size: </label>
+                <select id="font-size" value={fontSize} onChange={handleFontSizeChange}>
+                    <option value="14">14px</option>
+                    <option value="16">16px</option>
+                    <option value="18">18px</option>
+                    <option value="20">20px</option>
+                </select>
+            </div>
+            <div style={{ marginTop: '10px' }}>
+                <label htmlFor="theme-select">Select Theme: </label>
+                <select id="theme-select" value={theme} onChange={handleThemeChange}>
+                    <option value="monokai">Monokai</option>
+                    <option value="github">GitHub</option>
+                    <option value="twilight">Twilight</option>
+                </select>
+            </div>
             <AceEditor
                 mode={language === 'java' ? 'java' : language === 'c_cpp' ? 'c_cpp' : 'python'} // Set mode based on selected language
-                theme="monokai"
+                theme={theme}
                 name="code-editor"
                 onChange={handleCodeChange}
-                fontSize={16}
+                fontSize={fontSize}
                 width="100%"
                 height="400px"
                 showPrintMargin={true}
