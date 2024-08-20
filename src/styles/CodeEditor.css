@@ -1,0 +1,28 @@
+#code-editor {
+    font-family: 'Courier New', Courier, monospace;
+}
+
+.terminal-output {
+    background-color: black;
+    color: lime;
+    padding: 10px;
+    border-radius: 5px;
+    height: 200px;
+    overflow-y: auto;
+}
+
+.loader {
+    display: inline-block;
+    width: 80px;
+    height: 80px;
+    border: 8px solid rgba(0, 0, 0, 0.1);
+    border-radius: 50%;
+    border-top-color: #000;
+    animation: spin 1s infinite linear;
+}
+
+@keyframes spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
